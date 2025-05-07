@@ -4,7 +4,8 @@ CREATE TABLE utilisateurs (
     mot_de_passe VARCHAR(255) NOT NULL,
     nom VARCHAR(100) NOT NULL,
     prenom VARCHAR(100) NOT NULL,
-    type ENUM('eleve', 'prof') NOT NULL
+    type ENUM('eleve', 'prof') NOT NULL,
+    matiere VARCHAR(100) NULL    -- NULL pour les élèves, nom de la matière pour les profs
 );
 
 CREATE TABLE notes (
@@ -24,8 +25,12 @@ INSERT INTO notes (eleve_id, nom_eleve, matiere, note, coefficient, date) VALUES
 (101, 'Durand', 'Physique', 12.0, 1, '2025-03-15'),
 (101, 'Durand', 'Français', 13.5, 1.5, '2025-04-02');
 
-INSERT INTO utilisateurs (identifiant, mot_de_passe, nom, prenom, type) VALUES
-('durand', 'azerty', 'Durand', 'Paul', 'eleve'),
-('lemoine', '1234', 'Lemoine', 'Julie', 'eleve'),
-('bernardprof', 'profpass', 'Bernard', 'Jean', 'prof');
+-- Élèves (matiere = NULL)
+INSERT INTO utilisateurs (identifiant, mot_de_passe, nom, prenom, type, matiere) VALUES
+  ('durand',      'azerty',  'Durand',      'Paul',   'eleve', NULL),
+  ('lemoine',     '1234',    'Lemoine',     'Julie',  'eleve', NULL);
 
+-- Professeurs (on précise leur matière)
+INSERT INTO utilisateurs (identifiant, mot_de_passe, nom, prenom, type, matiere) VALUES
+  ('bernardprof', 'profpass','Bernard',     'Jean',   'prof',  'Maths'),
+  ('martinprof',  'motdepasse','Martin',    'Alice',  'prof',  'Physique');

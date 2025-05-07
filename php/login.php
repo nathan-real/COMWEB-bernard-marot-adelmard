@@ -44,9 +44,10 @@ if (isset($donnees['mot_de_passe'])) {
 }
 
 // Recherche de l'utilisateur
-$stmt = $bdd->prepare("SELECT id, nom, prenom, type, mot_de_passe 
+$stmt = $bdd->prepare("SELECT id, nom, prenom, type, matiere, mot_de_passe 
                        FROM utilisateurs 
                        WHERE identifiant = :identifiant");
+
 $stmt->execute(['identifiant' => $identifiant]);
 $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
 
