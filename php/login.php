@@ -1,25 +1,21 @@
 <?php
-// 1) Gérer la pré-flight OPTIONS
+// Réponse au pré-flight CORS
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    header("Access-Control-Allow-Methods: POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type");
-    header("HTTP/1.1 200 OK");
     exit(0);
 }
 
-// 2) Pour toutes les vraies requêtes POST suivantes
+// Headers pour la vraie requête
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json; charset=UTF-8");
 
-// Connexion à la base
+// Connexion
 $host = '127.0.0.1';
 $dbname = 'projetnote';
 $username = 'root';
 $password = '';
-
 try {
     $bdd = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 } catch (Exception $e) {
@@ -28,32 +24,23 @@ try {
     exit;
 }
 
-// Lecture du JSON du body
+// Lecture du JSON envoyé par React
 $donnees = json_decode(file_get_contents("php://input"), true);
+$identifiant = isset($donnees['identifiant']) ? $donnees['identifiant'] : '';
+$mot_de_passe = isset($donnees['mot_de_passe']) ? $donnees['mot_de_passe'] : '';
 
-// Sécurité : éviter les “undefined index”
-if (isset($donnees['identifiant'])) {
-    $identifiant = $donnees['identifiant'];
-} else {
-    $identifiant = '';
-}
-if (isset($donnees['mot_de_passe'])) {
-    $mot_de_passe = $donnees['mot_de_passe'];
-} else {
-    $mot_de_passe = '';
-}
-
-// Recherche de l'utilisateur
-$stmt = $bdd->prepare("SELECT id, nom, prenom, type, matiere, mot_de_passe 
-                       FROM utilisateurs 
-                       WHERE identifiant = :identifiant");
-
+// Recherche
+$stmt = $bdd->prepare("
+    SELECT id, nom, prenom, type, matiere, mot_de_passe
+    FROM utilisateurs
+    WHERE identifiant = :identifiant
+");
 $stmt->execute(['identifiant' => $identifiant]);
 $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Vérification du mot de passe (en clair pour l'instant)
+// Vérification
 if ($utilisateur && $mot_de_passe === $utilisateur['mot_de_passe']) {
-    unset($utilisateur['mot_de_passe']); // On ne renvoie pas le mot de passe
+    unset($utilisateur['mot_de_passe']);
     echo json_encode($utilisateur);
 } else {
     http_response_code(401);

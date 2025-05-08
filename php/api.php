@@ -1,61 +1,108 @@
 <?php
+// Réponse au pré-flight CORS
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST, PUT, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type");
+    exit(0);
+}
 
-// 🔓 Autoriser les requêtes venant d'autres origines (React tourne sur localhost:5173 ou 3000)
+// Headers pour les vraies requêtes
 header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Access-Control-Allow-Methods: GET, POST");
+header("Content-Type: application/json; charset=UTF-8");
 
-// ⚙️ Connexion à la base de données
-
+// Connexion
 $host = '127.0.0.1';
 $dbname = 'projetnote';
 $username = 'root';
 $password = '';
-
 try {
     $bdd = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 } catch (Exception $e) {
-    die('Erreur : ' . $e->getMessage());
+    http_response_code(500);
+    echo json_encode(['erreur' => 'Erreur de connexion à la base']);
+    exit;
 }
 
-// 📤 Fonction pour envoyer un tableau en JSON
-function envoiJSON($tab) {
-    header('Content-Type: application/json');
-    echo json_encode($tab, JSON_UNESCAPED_UNICODE);
+// GET action=profNotes pour voir les notes en tant que prof
+if (isset($_GET['action']) && $_GET['action'] === 'profNotes') { // On vérifie si on a bien action=qqc dans l'url + on vérifie que l'action est bien profNotes    
+   if (isset($_GET['matiere'])) { // Même chose pour matière
+        $matiere = $_GET['matiere'];
+    }
+    // On prépare la requette qui récupère les données qu'on veut
+    $stmt = $bdd->prepare(" 
+        SELECT n.id,
+               CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
+               n.matiere,
+               n.note,
+               n.coefficient
+        FROM notes n
+        JOIN utilisateurs u ON n.eleve_id = u.id
+        WHERE n.matiere = :matiere
+    "); // :matière est un placeholder, on lui donne la valeur après car on l'a pas tant qu'on a pas le contenu de l'url
+    $stmt->execute(['matiere' => $matiere]); // On exécute la requête en passant le paramètre matière
+    echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)); // On récupère les lignes et on les convertit en json puis on envoie au front de react
+    exit;
 }
 
-// 📥 Fonction pour récupérer les notes par identifiant ou nom d'utilisateur
-function recupNotes($texte, $bdd) {
-   if (is_numeric($texte)) {
-    $requete = "
-        SELECT CONCAT(u.prenom, ' ', u.nom) AS nom_eleve, n.matiere, n.note, n.coefficient, n.date
+// POST addNotes pour ajouter une note en tant que prof
+if ($_SERVER['REQUEST_METHOD'] === 'POST') { // on vérifie que la méthode est bien un post
+    $data = json_decode(file_get_contents("php://input"), true); // On récupère les inputs du front
+    if (isset($data['action']) && $data['action'] === 'addNotes') { // On vérifie que l'action est bien d'ajouter une note
+        $matiere = $data['matiere'];
+        $stmt = $bdd->prepare("
+            INSERT INTO notes (eleve_id, matiere, note, coefficient)
+            VALUES (:eleve_id, :matiere, :note, :coefficient)
+        "); // Préparation de la requête avec les placeholders
+
+        // On récupère la note à insérer
+        $n = null;
+        if (isset($data['notes'][0]))
+        {
+            $n = $data['notes'][0];
+        }
+
+        if ($n) { // Si on a bien récup un note (pas null) on execute la requette
+            $stmt->execute([
+                'eleve_id'    => $n['studentId'],
+                'matiere'     => $matiere,
+                'note'        => $n['note'],
+                'coefficient' => $n['coefficient']
+            ]);
+        }
+
+        echo json_encode(['success' => true]);
+        exit;
+    }
+}
+
+// GET pour récup les notes de l'élèves
+if (empty($_GET['url'])) {
+    echo json_encode([]);
+    exit;
+}
+$param = $_GET['url']; // On récupère la valeure du paramètre mis dans l'url
+if (is_numeric($param)) { // Si c'est numérique on fait une recherce avec l'id
+    $stmt = $bdd->prepare(" 
+        SELECT CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
+               n.matiere,
+               n.note,
+               n.coefficient
         FROM notes n
         JOIN utilisateurs u ON n.eleve_id = u.id
         WHERE u.id = :valeur
-    ";
-} else {
-    $requete = "
-        SELECT CONCAT(u.prenom, ' ', u.nom) AS nom_eleve, n.matiere, n.note, n.coefficient, n.date
+    "); // Requete préparée avec la contrainte where qui cible l'id de l'utilisateur
+} else { // Sinon on fait la recherche sur le nom de l'élève
+    $stmt = $bdd->prepare("
+        SELECT CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
+               n.matiere,
+               n.note,
+               n.coefficient
         FROM notes n
         JOIN utilisateurs u ON n.eleve_id = u.id
         WHERE u.identifiant LIKE :valeur
-    ";
+    "); // et là on cible l'identifiant pour comparer
 }
+$stmt->execute(['valeur' => "$param%"]); // n exécute la requette préparé
 
-
-    $stmt = $bdd->prepare($requete);
-    $stmt->execute(['valeur' => "$texte%"]);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-// 🧠 Logique principale
-if (empty($_GET)) {
-    header("Content-Type: text/html; charset=UTF-8");
-    echo "<h1>Bienvenue sur l'API de gestion des notes</h1>";
-    echo "<p>Ajoutez ?url=identifiant_ou_id pour interroger un élève.</p>";
-} else {
-    $param = $_GET['url'];
-    $donnees = recupNotes($param, $bdd);
-    envoiJSON($donnees);
-}
-?>
+echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)); // On l'envoie au front
