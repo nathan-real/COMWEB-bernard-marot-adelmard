@@ -29,14 +29,12 @@ INSERT INTO utilisateurs (identifiant, mot_de_passe, nom, prenom, type, matiere)
   ('martinprof',  'profpass2', 'Martin',   'Alice',  'prof',  'Physique');
 
 -- Insertion d’exemples de notes
--- On suppose : durand → id=1, lemoine → id=2
--- Notes de MATHS (pour bernardprof)
+
 INSERT INTO notes (eleve_id, matiere, note, coefficient) VALUES
   (1, 'Maths',   15.5, 2),
   (2, 'Maths',   17.0, 2),
   (1, 'Maths',   14.0, 1);
 
--- Notes de PHYSIQUE (pour martinprof)
 INSERT INTO notes (eleve_id, matiere, note, coefficient) VALUES
   (1, 'Physique', 12.0, 1),
   (2, 'Physique', 14.5, 1),

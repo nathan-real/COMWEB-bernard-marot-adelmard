@@ -1,62 +1,53 @@
 import { useState, useEffect } from 'react';
 import NotesTable from './NotesTable';
 
+// Composant qui affiche le dashboard d'un prof
 function ProfessorDashboard({ user, onLogout }) {
-    // Notes existantes
-    const [notes, setNotes] = useState([]);
+    const [notes, setNotes] = useState([]); // Notes existantes
 
-    // Un seul nouvel objet note à saisir
-    const [newNote, setNewNote] = useState({
+    const [newNote, setNewNote] = useState({ // Un seul nouvel objet note à saisir, vide par défaut
         studentId: '',
         note: '',
         coefficient: ''
     });
 
-    // Au montage, on charge toutes les notes de la matière du prof
+    // Au chargement de la page on charge toutes les notes de la matière du prof avec le useEffect en appelant fetchNotes
     useEffect(() => {
         fetchNotes();
     }, []);
 
     // Récupérer les notes de la classe pour la matière du prof
     const fetchNotes = async () => {
-        try {
-            const url = new URL('http://localhost/COMWEB-bernard-marot-adelmard/php/api.php');
-            url.searchParams.set('action', 'profNotes');
-            url.searchParams.set('matiere', user.matiere);
+        let url = `http://localhost/COMWEB-bernard-marot-adelmard/php/api.php`
+            + `?action=profNotes`
+            + `&matiere=${encodeURIComponent(user.matiere)}`;
 
-            const resp = await fetch(url.toString());
-            const data = await resp.json();
-            setNotes(data);
-        } catch {
-            setNotes([]);
-        }
+        const resp = await fetch(url); // lance une requette avec le lien qu'on a construit
+        const data = await resp.json(); // Conversion
+        setNotes(data);
     };
 
-    // Mettre à jour la saisie de la nouvelle note
-    const handleNewNoteChange = (field, value) => {
-        setNewNote(prev => ({ ...prev, [field]: value }));
+    // Mettre à jour la saisie de la nouvelle note 
+    const handleNewNoteChange = (champ, value) => {  // Champ contient la propiété de la note qu'on veut changé et value la valeur
+        setNewNote({ ...newNote, [champ]: value }); // On copie les anciennes propropriété avec (...) et on remplace la propriété par sa nouvelle valeur
     };
 
     // Envoyer la nouvelle note à l'API
     const handleSubmitNewNote = async () => {
-        try {
-            await fetch('http://localhost/COMWEB-bernard-marot-adelmard/php/api.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    action: 'addNotes',
-                    matiere: user.matiere,
-                    notes: [newNote]  // on envoie un tableau d'une seule note
-                })
-            });
-            // Réinitialiser le formulaire et recharger
-            setNewNote({ studentId: '', note: '', coefficient: '' });
-            fetchNotes();
-        } catch {
-            // silent fail
-        }
+        await fetch('http://localhost/COMWEB-bernard-marot-adelmard/php/api.php', { // Lance la requette vers l'url
+            method: 'POST', // Pour envoyer des infos à l'api et donc à la bdd
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ // Body contient ce qu'on envoie au serveur, que l'on transforme en chaine JSON
+                action: 'addNotes', // On donne la nature de l'envoie, ici on veut ajouer une note
+                matiere: user.matiere, // pour tel matière
+                notes: [newNote]  // on envoie un tableau de la nouvelle note
+            })
+        });
+        setNewNote({ studentId: '', note: '', coefficient: '' }); // On réinitinialise les champs de newNotes
+        fetchNotes(); // Appel à fetchNotes pour charger sur la page les nouvelle notes avec les anciennes
     };
 
+    // Affichage de la page
     return (
         <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
             <h1>
@@ -71,30 +62,30 @@ function ProfessorDashboard({ user, onLogout }) {
 
             {/* Tableau des notes existantes (non modifiable) */}
             <h2>Notes existantes</h2>
-            <NotesTable
+            <NotesTable // Appel du composant qui affiche le tableau des notes
                 notes={notes}
-                showStudentName
+                showStudentName // On précise qu'on veut voir les noms de l'étudiants plutot que les matières
             />
 
             {/* Formulaire d'ajout d'une seule note */}
             <div style={{ marginTop: '2rem' }}>
                 <h2>Ajouter une note</h2>
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                    <input
+                    <input // entré de texte pour l'id de l'élève
                         type="text"
                         placeholder="ID élève"
-                        value={newNote.studentId}
+                        value={newNote.studentId} // 
                         onChange={e => handleNewNoteChange('studentId', e.target.value)}
                         style={{ padding: '0.5rem', width: '100px' }}
                     />
-                    <input
+                    <input // Sa note
                         type="number"
                         placeholder="Note"
                         value={newNote.note}
                         onChange={e => handleNewNoteChange('note', e.target.value)}
                         style={{ padding: '0.5rem', width: '80px' }}
                     />
-                    <input
+                    <input // Son coeff
                         type="number"
                         placeholder="Coefficient"
                         value={newNote.coefficient}
