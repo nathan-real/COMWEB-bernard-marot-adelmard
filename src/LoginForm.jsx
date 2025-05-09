@@ -11,7 +11,15 @@ function LoginForm({ onLogin }) {
   };
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
+    <div style={{ padding: '2rem',
+    fontFamily: 'Arial', 
+    display: 'flex', 
+    justifyContent: 'center', 
+    flexDirection: 'column',
+    alignItems: 'center',
+     
+    }}>
+
       <h1>Connexion</h1>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>
