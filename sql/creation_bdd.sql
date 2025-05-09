@@ -24,18 +24,24 @@ INSERT INTO utilisateurs (identifiant, mot_de_passe, nom, prenom, type, matiere)
   -- élèves
   ('durand',      'azerty',    'Durand',   'Paul',   'eleve', NULL),
   ('lemoine',     '1234',      'Lemoine',  'Julie',  'eleve', NULL),
+  ('nadelmard,'   'bonjour',   'Adelmard', 'Nathan', 'eleve', NULL)
   -- profs
   ('bernardprof', 'profpass',  'Bernard',  'Jean',   'prof',  'Maths'),
   ('martinprof',  'profpass2', 'Martin',   'Alice',  'prof',  'Physique');
+  ('fplacin',     'comweb',    'Placin',   'Frérérique',  'prof',  'Communication Web');
 
 -- Insertion d’exemples de notes
-
 INSERT INTO notes (eleve_id, matiere, note, coefficient) VALUES
   (1, 'Maths',   15.5, 2),
   (2, 'Maths',   17.0, 2),
   (1, 'Maths',   14.0, 1);
 
 INSERT INTO notes (eleve_id, matiere, note, coefficient) VALUES
+  (1, 'Physique', 12.0, 1),
+  (2, 'Physique', 14.5, 1),
+  (2, 'Physique', 13.0, 1);
+
+INSERT INTO notes (eleve_id, Communication Web, note, coefficient) VALUES
   (1, 'Physique', 12.0, 1),
   (2, 'Physique', 14.5, 1),
   (2, 'Physique', 13.0, 1);

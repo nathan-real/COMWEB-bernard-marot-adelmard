@@ -30,16 +30,18 @@ if (isset($_GET['action']) && $_GET['action'] === 'profNotes') { // On vérifie 
         $matiere = $_GET['matiere'];
     }
     // On prépare la requette qui récupère les données qu'on veut
-    $stmt = $bdd->prepare(" 
-        SELECT n.id,
-               CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
-               n.matiere,
-               n.note,
-               n.coefficient
-        FROM notes n
-        JOIN utilisateurs u ON n.eleve_id = u.id
-        WHERE n.matiere = :matiere
-    "); // :matière est un placeholder, on lui donne la valeur après car on l'a pas tant qu'on a pas le contenu de l'url
+    $stmt = $bdd->prepare("
+    SELECT 
+        n.id,
+        u.id AS eleve_id,                          -- <-- ajouté
+        CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
+        n.matiere,
+        n.note,
+        n.coefficient
+    FROM notes n
+    JOIN utilisateurs u ON n.eleve_id = u.id
+    WHERE n.matiere = :matiere
+");// :matière est un placeholder, on lui donne la valeur après car on l'a pas tant qu'on a pas le contenu de l'url
     $stmt->execute(['matiere' => $matiere]); // On exécute la requête en passant le paramètre matière
     echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)); // On récupère les lignes et on les convertit en json puis on envoie au front de react
     exit;

@@ -17,7 +17,13 @@ function NotesTable({ notes, showStudentName = false }) { // Le booléen c'est p
                 {notes.map((n, i) => ( // on parcourt chaque éléments du tableau notes, n est la note avec toutes la caractéristiques
                     <tr key={i}>
                         {/* Valeur dynamique selon showStudentName */}
-                        <td>{showStudentName ? n.nom_eleve : n.matiere}</td>
+                        <td>
+                            {showStudentName
+                                ? `${n.nom_eleve}, ID : ${n.eleve_id}`
+                                : n.matiere
+                            }
+                        </td>
+
                         <td>{n.note}</td>
                         <td>{n.coefficient}</td>
                     </tr>
@@ -28,4 +34,3 @@ function NotesTable({ notes, showStudentName = false }) { // Le booléen c'est p
 }
 
 export default NotesTable;
-  
