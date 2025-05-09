@@ -6,7 +6,6 @@ import LoginForm from './LoginForm';
 function App() {
   const [user, setUser] = useState(null);
   const [notes, setNotes] = useState([]);
-  const [searchInput, setSearchInput] = useState('');
 
   // Login
   const handleLogin = async (credentials) => {
@@ -51,7 +50,6 @@ function App() {
   const handleLogout = () => { // On remplace toutes les variable par leurs valeurs par défault
     setUser(null);
     setNotes([]);
-    setSearchInput('');
   };
 
   // Rendu conditionnel en fonction de la nature de l'utilisateur
@@ -76,8 +74,6 @@ function App() {
       notes={notes}
       onFetch={fetchNotes}
       onLogout={handleLogout}
-      searchInput={searchInput}
-      setSearchInput={setSearchInput}
     />
   );
 }
