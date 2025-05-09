@@ -43,6 +43,5 @@ if ($utilisateur && $mot_de_passe === $utilisateur['mot_de_passe']) {
     unset($utilisateur['mot_de_passe']);
     echo json_encode($utilisateur);
 } else {
-    http_response_code(401);
     echo json_encode(['erreur' => 'Identifiant ou mot de passe incorrect']);
 }
