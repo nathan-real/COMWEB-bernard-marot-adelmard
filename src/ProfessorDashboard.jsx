@@ -2,8 +2,7 @@ import { useState, useEffect } from 'react';
 import NotesTable from './NotesTable';
 
 // Composant qui affiche le dashboard d'un prof
-function ProfessorDashboard({ user, onLogout }) {
-    const [notes, setNotes] = useState([]); // Notes existantes
+function ProfessorDashboard({ user, notes, onFetch, onLogout, }) {
 
     const [newNote, setNewNote] = useState({ // Un seul nouvel objet note à saisir, vide par défaut
         studentId: '',
@@ -13,19 +12,8 @@ function ProfessorDashboard({ user, onLogout }) {
 
     // Au chargement de la page on charge toutes les notes de la matière du prof avec le useEffect en appelant fetchNotes
     useEffect(() => {
-        fetchNotes();
+        onFetch();
     }, []);
-
-    // Récupérer les notes de la classe pour la matière du prof
-    const fetchNotes = async () => {
-        let url = `http://localhost/COMWEB-bernard-marot-adelmard/php/api.php`
-            + `?action=profNotes`
-            + `&matiere=${encodeURIComponent(user.matiere)}`;
-
-        const resp = await fetch(url); // lance une requette avec le lien qu'on a construit
-        const data = await resp.json(); // Conversion
-        setNotes(data);
-    };
 
     // Mettre à jour la saisie de la nouvelle note 
     const handleNewNoteChange = (champ, value) => {  // Champ contient la propiété de la note qu'on veut changé et value la valeur
@@ -44,7 +32,7 @@ function ProfessorDashboard({ user, onLogout }) {
             })
         });
         setNewNote({ studentId: '', note: '', coefficient: '' }); // On réinitinialise les champs de newNotes
-        fetchNotes(); // Appel à fetchNotes pour charger sur la page les nouvelle notes avec les anciennes
+        onFetch(); // Appel à fetchNotes pour charger sur la page les nouvelle notes avec les anciennes
     };
 
     // Affichage de la page
