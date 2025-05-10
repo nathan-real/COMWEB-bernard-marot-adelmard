@@ -8,21 +8,25 @@ function App() {
   const [notes, setNotes] = useState([]);
 
   // Login
-  const handleLogin = async (credentials) => {
+  const handleLogin = async (data) => {
     const resp = await fetch(
       'http://localhost/COMWEB-bernard-marot-adelmard/php/login.php',
       {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials),
+        method: 'POST', // On indique la méthode d'envoie des données
+        headers: { 'Content-Type': 'application/json' }, // on dit qu'on envoie du JSON
+        body: JSON.stringify(data), // Conversion du contenu en json puis envoie
       }
     );
     const userData = await resp.json();
-    setUser(userData);
+    if (userData === "erreur") { 
+      console.log("Erreur de connexion");
+    }
+    else
+      setUser(userData);
   };
 
   // Récupération des notes en fonction de la nature de l'utilisateur
-  const fetchNotes = async (param = '') => {
+  const fetchNotes = async (id = '') => {
     let url;
     if (user?.type === 'prof') { // Comme en c#, on indique que ça peut être null. On vérifie si cest un prof
       // pour un prof : toutes les notes de sa matière
@@ -31,11 +35,11 @@ function App() {
         + `&matiere=${encodeURIComponent(user.matiere)}`;
     } else {
       // pour un élève
-      url = `http://localhost/COMWEB-bernard-marot-adelmard/php/api.php?url=${encodeURIComponent(param)}`;
+      url = `http://localhost/COMWEB-bernard-marot-adelmard/php/api.php?id=${encodeURIComponent(id)}`;
     }
 
     const resp = await fetch(url); // lance une requette avec le lien qu'on a construit
-    const data = await resp.json();
+    const data = await resp.json(); //Récupération des data
     setNotes(data);
   };
 
@@ -53,7 +57,7 @@ function App() {
   };
 
   // Rendu conditionnel en fonction de la nature de l'utilisateur
-  if (!user) { // Si ya pas d'user on renvoir la page de login
+  if (!user) { // Si ya pas d'user on renvoie la page de login
     return <LoginForm onLogin={handleLogin} />;
   }
 

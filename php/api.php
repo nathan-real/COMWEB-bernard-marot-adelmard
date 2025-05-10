@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // on vérifie que la méthode est 
             $n = $data['notes'][0];
         }
 
-        if ($n) { // Si on a bien récup un note (pas null) on execute la requette
+        if ($n) { // Si on a bien récup une note (pas null) on execute la requette
             $stmt->execute([
                 'eleve_id'    => $n['studentId'],
                 'matiere'     => $matiere,
@@ -79,32 +79,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // on vérifie que la méthode est 
 }
 
 // GET pour récup les notes de l'élèves
-if (empty($_GET['url'])) {
+if (empty($_GET['id'])) {
     echo json_encode([]);
     exit;
 }
-$param = $_GET['url']; // On récupère la valeure du paramètre mis dans l'url
-if (is_numeric($param)) { // Si c'est numérique on fait une recherce avec l'id
-    $stmt = $bdd->prepare(" 
-        SELECT CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
-               n.matiere,
-               n.note,
-               n.coefficient
-        FROM notes n
-        JOIN utilisateurs u ON n.eleve_id = u.id
-        WHERE u.id = :valeur
+$param = $_GET['id']; // On récupère la valeur du paramètre mis dans l'url
+$stmt = $bdd->prepare(" 
+    SELECT CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
+        n.matiere,
+        n.note,
+        n.coefficient
+    FROM notes n
+    JOIN utilisateurs u ON n.eleve_id = u.id
+    WHERE u.id = :valeur
     "); // Requete préparée avec la contrainte where qui cible l'id de l'utilisateur
-} else { // Sinon on fait la recherche sur le nom de l'élève
-    $stmt = $bdd->prepare("
-        SELECT CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
-               n.matiere,
-               n.note,
-               n.coefficient
-        FROM notes n
-        JOIN utilisateurs u ON n.eleve_id = u.id
-        WHERE u.identifiant LIKE :valeur
-    "); // et là on cible l'identifiant pour comparer
-}
-$stmt->execute(['valeur' => "$param%"]); // n exécute la requette préparé
+$stmt->execute(['valeur' => "$param%"]); // on exécute la requete préparée 
 
 echo json_encode($stmt->fetchAll(PDO::FETCH_ASSOC)); // On l'envoie au front

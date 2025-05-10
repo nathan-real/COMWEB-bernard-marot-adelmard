@@ -6,7 +6,7 @@ function LoginForm({ onLogin }) {
   const [motDePasse, setMotDePasse] = useState('');
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); // évite le rafraichissement automatique de la pagex 
     onLogin({ identifiant, mot_de_passe: motDePasse });
   };
 

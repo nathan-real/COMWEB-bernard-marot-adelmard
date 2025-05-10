@@ -6,7 +6,7 @@ function StudentDashboard({ user, notes, onLogout }) {
     <div style={{ padding: '2rem', fontFamily: 'Arial' }}>
       <h1>
         Bonjour {user.prenom} {user.nom} (Élève)
-      </h1>
+      </h1> 
       <button onClick={onLogout} style={{ marginBottom: '1rem', padding: '0.5rem 1rem' }}>
         Se déconnecter
       </button>

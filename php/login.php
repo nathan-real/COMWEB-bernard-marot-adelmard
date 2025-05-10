@@ -41,7 +41,7 @@ $utilisateur = $stmt->fetch(PDO::FETCH_ASSOC);
 // Vérification
 if ($utilisateur && $mot_de_passe === $utilisateur['mot_de_passe']) {
     unset($utilisateur['mot_de_passe']);
-    echo json_encode($utilisateur);
+    echo json_encode($utilisateur); // utilisateur contient un tableau associatif de toute ses propriétés
 } else {
-    echo json_encode(['erreur' => 'Identifiant ou mot de passe incorrect']);
+    echo json_encode("erreur");
 }
