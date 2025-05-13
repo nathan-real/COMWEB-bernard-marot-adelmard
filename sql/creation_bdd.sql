@@ -31,8 +31,7 @@ INSERT INTO utilisateurs (identifiant, mot_de_passe, nom, prenom, type, matiere)
   ('lejbernardo', '83tilsense', 'Bernard',  'Julien',     'eleve', NULL),
   ('bernardprof', 'profpass',   'Bernard',  'Jean',       'prof',  'Maths'),
   ('martinprof',  'profpass2',  'Martin',   'Alice',      'prof',  'Physique'),
-  ('fplacin',     'comweb',     'Placin',   'Frédérique', 'prof',  'Communication-Web'
-);
+  ('fplacin',     'comweb',     'Placin',   'Frédérique', 'prof',  'Communication-Web');
 
 -- Insertion d’exemples de notes
 INSERT INTO notes (eleve_id, matiere, note, coefficient) VALUES

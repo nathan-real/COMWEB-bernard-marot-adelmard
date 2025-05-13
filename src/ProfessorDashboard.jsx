@@ -61,7 +61,7 @@ function ProfessorDashboard({ user, notes, onFetch, onLogout, }) {
                     <input // entré de texte pour l'id de l'élève
                         type="text"
                         placeholder="ID élève"
-                        value={newNote.studentId} // 
+                        value={newNote.studentId} 
                         onChange={e => handleNewNoteChange('studentId', e.target.value)}
                         style={{ padding: '0.5rem', width: '100px' }}
                     />
