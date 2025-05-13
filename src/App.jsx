@@ -27,15 +27,14 @@ function App() {
 
   // Récupération des notes en fonction de la nature de l'utilisateur
   const fetchNotes = async (id = '') => {
-    let url;
+    let url = `https://nadelmard.zzz.bordeaux-inp.fr/php/api.php`;
     if (user?.type === 'prof') { // Comme en c#, on indique que ça peut être null. On vérifie si cest un prof
       // pour un prof : toutes les notes de sa matière
-      url = `https://nadelmard.zzz.bordeaux-inp.fr/php/api.php`
-        + `?action=profNotes`
+      url += `?action=profNotes`
         + `&matiere=${encodeURIComponent(user.matiere)}`;
     } else {
       // pour un élève
-      url = `https://nadelmard.zzz.bordeaux-inp.fr/php/api.php?id=${encodeURIComponent(id)}`;
+      url += `?id=${encodeURIComponent(id)}`;
     }
 
     const resp = await fetch(url); // lance une requette avec le lien qu'on a construit

@@ -91,7 +91,7 @@ $stmt = $bdd->prepare("
         n.coefficient
     FROM notes n
     JOIN utilisateurs u ON n.eleve_id = u.id
-    WHERE u.id = :valeur
+    WHERE u.id = :valeur 
     "); // Requete préparée avec la contrainte where qui cible l'id de l'utilisateur
 $stmt->execute(['valeur' => "$param%"]); // on exécute la requete préparée 
 
