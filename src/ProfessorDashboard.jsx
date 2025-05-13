@@ -21,7 +21,7 @@ function ProfessorDashboard({ user, notes, onFetch, onLogout, }) {
 
     // Envoyer la nouvelle note à l'API
     const handleSubmitNewNote = async () => {
-        await fetch('http://localhost/COMWEB-bernard-marot-adelmard/php/api.php', { // Lance la requette vers l'url
+        await fetch('https://nadelmard.zzz.bordeaux-inp.fr/php/api.php', { // Lance la requette vers l'url
             method: 'POST', // Pour envoyer des infos à l'api et donc à la bdd
             headers: { 'Content-Type': 'application/json' }, // On indique qu'on envoie un JSON
             body: JSON.stringify({ // Body contient ce qu'on envoie au serveur, que l'on transforme en chaine JSON

@@ -12,10 +12,10 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 // Connexion
-$host = '127.0.0.1'; //localhost
-$dbname = 'projetnote';
-$username = 'root';
-$password = '';
+$host = 'localhost'; //localhost
+$dbname = 'nadelmard';
+$username = 'nadelmard';
+$password = 'comweb';
 try {
     $bdd = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
 } catch (Exception $e) {

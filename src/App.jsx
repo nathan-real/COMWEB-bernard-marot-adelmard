@@ -10,7 +10,7 @@ function App() {
   // Login
   const handleLogin = async (data) => {
     const resp = await fetch(
-      'http://localhost/COMWEB-bernard-marot-adelmard/php/login.php',
+      'https://nadelmard.zzz.bordeaux-inp.fr/php/login.php',
       {
         method: 'POST', // On indique la méthode d'envoie des données
         headers: { 'Content-Type': 'application/json' }, // on dit qu'on envoie du JSON
@@ -30,12 +30,12 @@ function App() {
     let url;
     if (user?.type === 'prof') { // Comme en c#, on indique que ça peut être null. On vérifie si cest un prof
       // pour un prof : toutes les notes de sa matière
-      url = `http://localhost/COMWEB-bernard-marot-adelmard/php/api.php`
+      url = `https://nadelmard.zzz.bordeaux-inp.fr/php/api.php`
         + `?action=profNotes`
         + `&matiere=${encodeURIComponent(user.matiere)}`;
     } else {
       // pour un élève
-      url = `http://localhost/COMWEB-bernard-marot-adelmard/php/api.php?id=${encodeURIComponent(id)}`;
+      url = `https://nadelmard.zzz.bordeaux-inp.fr/php/api.php?id=${encodeURIComponent(id)}`;
     }
 
     const resp = await fetch(url); // lance une requette avec le lien qu'on a construit
