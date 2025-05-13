@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 // Composant pour le formulaire de connexion
 function LoginForm({ onLogin }) {
   const [identifiant, setIdentifiant] = useState('');
@@ -11,15 +10,15 @@ function LoginForm({ onLogin }) {
   };
 
   return (
-    <div style={{ padding: '2rem',
-    fontFamily: 'Arial', 
-    display: 'flex', 
-    justifyContent: 'center', 
-    flexDirection: 'column',
-    alignItems: 'center',
-     
-    }}>
+    <div style={{
+      padding: '2rem',
+      fontFamily: 'Arial',
+      display: 'flex',
+      justifyContent: 'center',
+      flexDirection: 'column',
+      alignItems: 'center',
 
+    }}>
       <h1>Connexion</h1>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '1rem' }}>

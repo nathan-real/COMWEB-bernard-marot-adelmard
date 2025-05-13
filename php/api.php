@@ -12,7 +12,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json; charset=UTF-8");
 
 // Connexion
-$host = '127.0.0.1';
+$host = '127.0.0.1'; //localhost
 $dbname = 'projetnote';
 $username = 'root';
 $password = '';

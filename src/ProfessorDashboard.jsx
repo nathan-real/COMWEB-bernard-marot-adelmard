@@ -3,20 +3,19 @@ import NotesTable from './NotesTable';
 
 // Composant qui affiche le dashboard d'un prof
 function ProfessorDashboard({ user, notes, onFetch, onLogout, }) {
-
     const [newNote, setNewNote] = useState({ // Un seul nouvel objet note à saisir, vide par défaut
         studentId: '',
         note: '',
         coefficient: ''
     });
 
-    // Au chargement de la page on charge toutes les notes de la matière du prof avec le useEffect en appelant fetchNotes
+    // Au chargement de la page on charge toutes les notes de la matière du prof avec le useEffect en appelant fetchNotes via onFetch
     useEffect(() => {
         onFetch();
     }, []);
 
     // Mettre à jour la saisie de la nouvelle note 
-    const handleNewNoteChange = (champ, value) => {  // Champ contient la propiété de la note qu'on veut changé et value la valeur
+    const handleNewNoteChange = (champ, value) => {  // Champ contient la propiété de la note qu'on veut changer et value la valeur qu'on veut lui donnée
         setNewNote({ ...newNote, [champ]: value }); // On copie les anciennes propropriété avec (...) et on remplace la propriété par sa nouvelle valeur
     };
 
@@ -24,7 +23,7 @@ function ProfessorDashboard({ user, notes, onFetch, onLogout, }) {
     const handleSubmitNewNote = async () => {
         await fetch('http://localhost/COMWEB-bernard-marot-adelmard/php/api.php', { // Lance la requette vers l'url
             method: 'POST', // Pour envoyer des infos à l'api et donc à la bdd
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json' }, // On indique qu'on envoie un JSON
             body: JSON.stringify({ // Body contient ce qu'on envoie au serveur, que l'on transforme en chaine JSON
                 action: 'addNotes', // On donne la nature de l'envoie, ici on veut ajouer une note
                 matiere: user.matiere, // pour tel matière
