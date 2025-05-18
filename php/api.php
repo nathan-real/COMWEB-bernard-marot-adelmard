@@ -33,7 +33,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'profNotes') { // On vérifie 
     $stmt = $bdd->prepare("
     SELECT 
         n.id,
-        u.id AS eleve_id,                          -- <-- ajouté
+        u.id AS eleve_id,                         
         CONCAT(u.prenom,' ',u.nom) AS nom_eleve,
         n.matiere,
         n.note,
