@@ -56,7 +56,7 @@ function App() {
   };
 
   // Rendu conditionnel en fonction de la nature de l'utilisateur
-  if (!user) { // Si ya pas d'user on renvoir la page de login
+  if (!user) { // Si pas d'user on renvoir la page de login
     return <LoginForm onLogin={handleLogin} />;
   }
 

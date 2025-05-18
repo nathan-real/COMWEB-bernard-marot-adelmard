@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') { // on vérifie que la méthode est 
             $n = $data['notes'][0];
         }
 
-        if ($n) { // Si on a bien récup une note (pas null) on execute la requette
+        if ($n) { // Si on a bien récup une note (pas null) on execute la requete
             $stmt->execute([
                 'eleve_id'    => $n['studentId'],
                 'matiere'     => $matiere,
